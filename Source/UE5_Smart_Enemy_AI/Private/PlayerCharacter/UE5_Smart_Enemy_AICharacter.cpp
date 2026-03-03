@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "UE5_Smart_Enemy_AICharacter.h"
+#include "PlayerCharacter/UE5_Smart_Enemy_AICharacter.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"

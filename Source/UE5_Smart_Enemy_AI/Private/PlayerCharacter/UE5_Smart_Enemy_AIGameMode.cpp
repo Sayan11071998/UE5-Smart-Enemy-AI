@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "UE5_Smart_Enemy_AIGameMode.h"
-#include "UE5_Smart_Enemy_AICharacter.h"
+#include "PlayerCharacter/UE5_Smart_Enemy_AIGameMode.h"
+#include "PlayerCharacter/UE5_Smart_Enemy_AICharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AUE5_Smart_Enemy_AIGameMode::AUE5_Smart_Enemy_AIGameMode()
