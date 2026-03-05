@@ -14,7 +14,8 @@ public class UE5_Smart_Enemy_AI : ModuleRules
 			"CoreUObject",
 			"Engine",
 			"InputCore",
-			"EnhancedInput"
+			"EnhancedInput",
+			"AIModule"
 		});
 	}
 }
