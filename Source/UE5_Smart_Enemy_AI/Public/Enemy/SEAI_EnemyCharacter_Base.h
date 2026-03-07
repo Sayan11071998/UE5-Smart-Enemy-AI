@@ -5,6 +5,7 @@
 #include "SEAI_EnemyCharacter_Base.generated.h"
 
 class ASEAI_SwordBase;
+class ASEAI_PatrolRoute;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
 
@@ -21,6 +22,9 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "Combat")
 	FOnAttackEnd OnAttackEnd;
+	
+	UPROPERTY(EditInstanceOnly, Category = "AI")
+	TObjectPtr<ASEAI_PatrolRoute> PatrolRoute;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
@@ -42,4 +46,5 @@ private:
 	
 public:
 	FORCEINLINE bool IsWieldingSword() const { return bIsWieldingSword; }
+	FORCEINLINE TObjectPtr<ASEAI_PatrolRoute> GetPatrolRoute() const { return PatrolRoute; }
 };
