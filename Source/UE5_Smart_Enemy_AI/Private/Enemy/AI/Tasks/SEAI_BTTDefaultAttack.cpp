@@ -18,16 +18,14 @@ EBTNodeResult::Type USEAI_BTTDefaultAttack::ExecuteTask(UBehaviorTreeComponent& 
 		{
 			CachedBTComp = &OwnerComp;
 			
-			// Bind to the attack end delegate
+			Enemy->OnAttackEnd.RemoveDynamic(this, &USEAI_BTTDefaultAttack::HandleAttackFinished);
 			Enemy->OnAttackEnd.AddDynamic(this, &USEAI_BTTDefaultAttack::HandleAttackFinished);
-			
-			// Start the attack
+
 			Enemy->Attack();
-			
 			return EBTNodeResult::InProgress;
 		}
 	}
-	
+
 	return EBTNodeResult::Failed;
 }
 
@@ -35,6 +33,17 @@ void USEAI_BTTDefaultAttack::HandleAttackFinished()
 {
 	if (CachedBTComp)
 	{
+		AAIController* AIController = CachedBTComp->GetAIOwner();
+		if (AIController)
+		{
+			ASEAI_EnemyCharacter_Base* Enemy = Cast<ASEAI_EnemyCharacter_Base>(AIController->GetPawn());
+			if (Enemy)
+			{
+				Enemy->OnAttackEnd.RemoveDynamic(this, &USEAI_BTTDefaultAttack::HandleAttackFinished);
+			}
+		}
+
 		FinishLatentTask(*CachedBTComp, EBTNodeResult::Succeeded);
+		CachedBTComp = nullptr;
 	}
 }
