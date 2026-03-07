@@ -4,7 +4,7 @@
 
 USEAI_BTT_ClearFocus::USEAI_BTT_ClearFocus()
 {
-	NodeName = "Clear Focus";
+	NodeName = TEXT("Clear Focus");
 }
 
 EBTNodeResult::Type USEAI_BTT_ClearFocus::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

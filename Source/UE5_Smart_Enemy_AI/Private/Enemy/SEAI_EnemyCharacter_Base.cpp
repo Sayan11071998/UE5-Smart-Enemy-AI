@@ -1,6 +1,7 @@
 #include "Enemy/SEAI_EnemyCharacter_Base.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Items/SEAI_SwordBase.h"
 
 ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 {
@@ -26,6 +27,29 @@ ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	}
+}
+
+void ASEAI_EnemyCharacter_Base::WieldSword()
+{
+	if (SwordClass && !bIsWieldingSword)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		
+		SpawnedSword = GetWorld()->SpawnActor<ASEAI_SwordBase>(SwordClass, GetActorTransform(), SpawnParams);
+		if (SpawnedSword)
+		{
+			FAttachmentTransformRules AttachRules(
+				EAttachmentRule::SnapToTarget,	
+				EAttachmentRule::SnapToTarget,	
+				EAttachmentRule::SnapToTarget,
+				true
+			);
+			
+			SpawnedSword->AttachToComponent(GetMesh(), AttachRules, SwordSocket);
+			bIsWieldingSword = true;
+		}
 	}
 }
 
