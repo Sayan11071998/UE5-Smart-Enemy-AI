@@ -7,27 +7,34 @@ ASEAI_PatrolRoute::ASEAI_PatrolRoute()
 	
 	PatrolRoute = CreateDefaultSubobject<USplineComponent>(TEXT("PatrolRoute"));
 	RootComponent = PatrolRoute;
+	
+	PatrolIndex = 0;
+	Direction = 1;
 }
 
 FVector ASEAI_PatrolRoute::GetSplinePointAsWorldPosition(int32 PointIndex) const
 {
+	if (!PatrolRoute)
+	{
+		return FVector::ZeroVector;
+	}
+	
 	return PatrolRoute->GetLocationAtSplinePoint(PointIndex, ESplineCoordinateSpace::World);
 }
 
 void ASEAI_PatrolRoute::IncrementPatrolRoute()
 {
+	if (!PatrolRoute) return;
+	
+	PatrolIndex = PatrolIndex + Direction;
 	const int32 NumPoints = PatrolRoute->GetNumberOfSplinePoints();
-
-	PatrolIndex += Direction;
-
-	if (PatrolIndex >= NumPoints)
+	
+	if (PatrolIndex == NumPoints - 1)
 	{
 		Direction = -1;
-		PatrolIndex = NumPoints - 1;
 	}
-	else if (PatrolIndex <= 0)
+	else if (PatrolIndex == 0)
 	{
 		Direction = 1;
-		PatrolIndex = 0;
 	}
 }

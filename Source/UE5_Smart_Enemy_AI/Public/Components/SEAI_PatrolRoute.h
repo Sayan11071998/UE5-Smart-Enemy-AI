@@ -21,8 +21,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<USplineComponent> PatrolRoute;
 	
-	int32 PatrolIndex = 0;
-	int32 Direction = 1;
+	int32 PatrolIndex;
+	int32 Direction;
 	
 public:
 	FORCEINLINE int32 GetPatrolIndex() const { return PatrolIndex; }

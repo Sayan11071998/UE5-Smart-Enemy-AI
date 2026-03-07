@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/SEAI_EnemyAI_Interface.h"
 #include "SEAI_EnemyCharacter_Base.generated.h"
 
 class ASEAI_SwordBase;
@@ -10,7 +11,7 @@ class ASEAI_PatrolRoute;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
 
 UCLASS()
-class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter
+class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, public ISEAI_EnemyAI_Interface
 {
 	GENERATED_BODY()
 
@@ -46,5 +47,5 @@ private:
 	
 public:
 	FORCEINLINE bool IsWieldingSword() const { return bIsWieldingSword; }
-	FORCEINLINE TObjectPtr<ASEAI_PatrolRoute> GetPatrolRoute() const { return PatrolRoute; }
+	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
 };

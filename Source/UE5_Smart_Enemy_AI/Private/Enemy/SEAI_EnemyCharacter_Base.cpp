@@ -83,3 +83,8 @@ void ASEAI_EnemyCharacter_Base::HandleAttackMontageFinished(UAnimMontage* Montag
 		OnAttackEnd.Broadcast();
 	}
 }
+
+ASEAI_PatrolRoute* ASEAI_EnemyCharacter_Base::GetPatrolRoute_Implementation() const
+{
+	return PatrolRoute;
+}
