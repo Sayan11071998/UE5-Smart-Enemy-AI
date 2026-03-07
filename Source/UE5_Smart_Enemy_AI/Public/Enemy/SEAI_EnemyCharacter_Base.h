@@ -21,7 +21,9 @@ public:
 	void WieldSword();
 	void Attack();
 	
-	UPROPERTY(BlueprintAssignable, Category = "Combat")
+	// USEAI_EnemyAI_Interface interface
+	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
+	
 	FOnAttackEnd OnAttackEnd;
 	
 	UPROPERTY(EditInstanceOnly, Category = "AI")
@@ -47,5 +49,4 @@ private:
 	
 public:
 	FORCEINLINE bool IsWieldingSword() const { return bIsWieldingSword; }
-	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
 };
