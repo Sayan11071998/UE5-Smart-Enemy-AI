@@ -88,3 +88,31 @@ ASEAI_PatrolRoute* ASEAI_EnemyCharacter_Base::GetPatrolRoute_Implementation() co
 {
 	return PatrolRoute;
 }
+
+float ASEAI_EnemyCharacter_Base::SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed)
+{
+	float SpeedValue = 0.f;
+
+	switch (Speed)
+	{
+	case ESEAI_MovementSpeed::Idle:
+		SpeedValue = 0.f;
+		break;
+	case ESEAI_MovementSpeed::Walking:
+		SpeedValue = 100.f;
+		break;
+	case ESEAI_MovementSpeed::Jogging:
+		SpeedValue = 300.f;
+		break;
+	case ESEAI_MovementSpeed::Sprinting:
+		SpeedValue = 500.f;
+		break;
+	}
+	
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = SpeedValue;
+	}
+	
+	return SpeedValue;
+}

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Enemy/AI/Enums/SEAI_AI_DataTypes.h"
 #include "SEAI_EnemyAI_Interface.generated.h"
 
 class ASEAI_PatrolRoute;
@@ -19,4 +20,7 @@ class UE5_SMART_ENEMY_AI_API ISEAI_EnemyAI_Interface
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
 	ASEAI_PatrolRoute* GetPatrolRoute() const;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
+	float SetMovementSpeed(ESEAI_MovementSpeed Speed);
 };
