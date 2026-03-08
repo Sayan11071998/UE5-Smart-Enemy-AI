@@ -9,6 +9,8 @@ class ASEAI_SwordBase;
 class ASEAI_PatrolRoute;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEquipSwordEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnequipSwordEnd);
 
 UCLASS()
 class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, public ISEAI_EnemyAI_Interface
@@ -19,16 +21,25 @@ public:
 	ASEAI_EnemyCharacter_Base();
 	
 	void WieldSword();
+	void UnequipSword();
 	void Attack();
 	
 	// USEAI_EnemyAI_Interface interface
 	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
 	virtual float SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed) override;
 	
+	FOnEquipSwordEnd OnEquipSwordEnd;
+	FOnUnequipSwordEnd OnUnequipSwordEnd;
 	FOnAttackEnd OnAttackEnd;
 	
 	UPROPERTY(EditInstanceOnly, Category = "AI")
 	TObjectPtr<ASEAI_PatrolRoute> PatrolRoute;
+	
+	UFUNCTION(BlueprintCallable, Category = "AI|Combat")
+	void HandleWieldNotify();
+	
+	UFUNCTION(BlueprintCallable, Category = "AI|Combat")
+	void HandleSheathNotify();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
@@ -37,9 +48,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FName SwordSocket = FName(TEXT("hand_r_sword_socket"));
 	
+	UPROPERTY(EditDefaultsOnly, Category = "AI|Combat")
+	TObjectPtr<UAnimMontage> EquipMontage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AI|Combat")
+	TObjectPtr<UAnimMontage> UnequipMontage;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
+	void OnWieldMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnSheathMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	void HandleAttackMontageFinished(UAnimMontage* Montage, bool bInterrupted);
 	
 private:

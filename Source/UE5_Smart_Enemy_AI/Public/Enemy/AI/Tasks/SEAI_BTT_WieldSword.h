@@ -16,4 +16,11 @@ protected:
 	// ~ Begin UBTTaskNode interface
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	// ~ End UBTTaskNode interface
+
+private:
+	UFUNCTION()
+	void OnWieldFinished();
+
+	UPROPERTY()
+	TObjectPtr<UBehaviorTreeComponent> CachedBTComp;
 };

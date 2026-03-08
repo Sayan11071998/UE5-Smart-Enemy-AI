@@ -32,23 +32,36 @@ ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 
 void ASEAI_EnemyCharacter_Base::WieldSword()
 {
-	if (SwordClass && !bIsWieldingSword)
+	if (EquipMontage && !bIsWieldingSword)
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		
-		SpawnedSword = GetWorld()->SpawnActor<ASEAI_SwordBase>(SwordClass, GetActorTransform(), SpawnParams);
-		if (SpawnedSword)
+		float Duration = PlayAnimMontage(EquipMontage);
+		if (Duration > 0.0f)
 		{
-			FAttachmentTransformRules AttachRules(
-				EAttachmentRule::SnapToTarget,	
-				EAttachmentRule::SnapToTarget,	
-				EAttachmentRule::SnapToTarget,
-				true
-			);
-			
-			SpawnedSword->AttachToComponent(GetMesh(), AttachRules, SwordSocket);
-			bIsWieldingSword = true;
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			if (AnimInstance)
+			{
+				FOnMontageEnded MontageEndedDelegate;
+				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnWieldMontageEnded);
+				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, EquipMontage);
+			}
+		}
+	}
+}
+
+void ASEAI_EnemyCharacter_Base::UnequipSword()
+{
+	if (UnequipMontage && bIsWieldingSword)
+	{
+		float Duration = PlayAnimMontage(UnequipMontage);
+		if (Duration > 0.0f)
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			if (AnimInstance)
+			{
+				FOnMontageEnded MontageEndedDelegate;
+				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnSheathMontageEnded);
+				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, UnequipMontage);
+			}
 		}
 	}
 }
@@ -74,6 +87,16 @@ void ASEAI_EnemyCharacter_Base::Attack()
 			OnAttackEnd.Broadcast();
 		}
 	}
+}
+
+void ASEAI_EnemyCharacter_Base::OnWieldMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	OnEquipSwordEnd.Broadcast();
+}
+
+void ASEAI_EnemyCharacter_Base::OnSheathMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	OnUnequipSwordEnd.Broadcast();
 }
 
 void ASEAI_EnemyCharacter_Base::HandleAttackMontageFinished(UAnimMontage* Montage, bool bInterrupted)
@@ -115,4 +138,37 @@ float ASEAI_EnemyCharacter_Base::SetMovementSpeed_Implementation(ESEAI_MovementS
 	}
 	
 	return SpeedValue;
+}
+
+void ASEAI_EnemyCharacter_Base::HandleWieldNotify()
+{
+	if (SwordClass && !SpawnedSword)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		
+		SpawnedSword = GetWorld()->SpawnActor<ASEAI_SwordBase>(SwordClass, GetActorTransform(), SpawnParams);
+		if (SpawnedSword)
+		{
+			FAttachmentTransformRules AttachRules(
+				EAttachmentRule::SnapToTarget,	
+				EAttachmentRule::SnapToTarget,	
+				EAttachmentRule::SnapToTarget,
+				true
+			);
+			
+			SpawnedSword->AttachToComponent(GetMesh(), AttachRules, SwordSocket);
+			bIsWieldingSword = true;
+		}
+	}
+}
+
+void ASEAI_EnemyCharacter_Base::HandleSheathNotify()
+{
+	if (SpawnedSword)
+	{
+		SpawnedSword->Destroy();
+		SpawnedSword = nullptr;
+		bIsWieldingSword = false;
+	}
 }

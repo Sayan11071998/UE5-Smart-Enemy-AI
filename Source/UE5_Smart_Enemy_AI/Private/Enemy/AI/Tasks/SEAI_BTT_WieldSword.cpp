@@ -9,16 +9,25 @@ USEAI_BTT_WieldSword::USEAI_BTT_WieldSword()
 
 EBTNodeResult::Type USEAI_BTT_WieldSword::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController = OwnerComp.GetAIOwner();
-	if (AIController)
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
 	{
-		ASEAI_EnemyCharacter_Base* Enemy = Cast<ASEAI_EnemyCharacter_Base>(AIController->GetPawn());
-		if (Enemy)
+		if (ASEAI_EnemyCharacter_Base* Enemy = Cast<ASEAI_EnemyCharacter_Base>(AIController->GetPawn()))
 		{
+			CachedBTComp = &OwnerComp;
+			Enemy->OnEquipSwordEnd.AddUniqueDynamic(this, &USEAI_BTT_WieldSword::OnWieldFinished);
+			
 			Enemy->WieldSword();
-			return EBTNodeResult::Succeeded;
+			return EBTNodeResult::InProgress;
 		}
 	}
-
+	
 	return EBTNodeResult::Failed;
+}
+
+void USEAI_BTT_WieldSword::OnWieldFinished()
+{
+	if (CachedBTComp)
+	{
+		FinishLatentTask(*CachedBTComp, EBTNodeResult::Succeeded);
+	}
 }
