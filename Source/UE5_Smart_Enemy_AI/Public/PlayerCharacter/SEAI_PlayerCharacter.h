@@ -27,6 +27,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void HandleToggleAIState();
 	void HandleMakeNoise();
+	void HandleDamageAction();
 	
 private:
 	// Private Components
@@ -54,6 +55,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MakeNoiseAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> DamageAction;
 	
 	// Effects
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")

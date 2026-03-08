@@ -6,12 +6,14 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "PlayerCharacter/SEAI_PlayerCharacter.h"
 #include "Perception/AISenseConfig_Hearing.h"
+#include "Perception/AISenseConfig_Damage.h"
 
 ASEAI_EnemyAIController_Base::ASEAI_EnemyAIController_Base()
 {
 	PerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("HearingConfig"));
+	DamageConfig = CreateDefaultSubobject<UAISenseConfig_Damage>(TEXT("DamageConfig"));
 	
 	SightConfig->SightRadius = 800.f;
 	SightConfig->LoseSightRadius = 1200.f;
@@ -26,9 +28,12 @@ ASEAI_EnemyAIController_Base::ASEAI_EnemyAIController_Base()
 	HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
 	HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	
+	DamageConfig->SetMaxAge(5.0f);
 
 	PerceptionComp->ConfigureSense(*SightConfig);
 	PerceptionComp->ConfigureSense(*HearingConfig);
+	PerceptionComp->ConfigureSense(*DamageConfig);
 	PerceptionComp->SetDominantSense(SightConfig->GetSenseImplementation());
 	PerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &ASEAI_EnemyAIController_Base::HandleTargetPerceptionUpdated);
 }

@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Enemy/SEAI_EnemyCharacter_Base.h"
 #include "Enemy/AI/SEAI_EnemyAIController_Base.h"
+#include "Perception/AISense_Damage.h"
 
 ASEAI_PlayerCharacter::ASEAI_PlayerCharacter()
 {
@@ -64,6 +65,7 @@ void ASEAI_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	
 		EnhancedInputComponent->BindAction(ToggleAIStateAction, ETriggerEvent::Started, this, &ASEAI_PlayerCharacter::HandleToggleAIState);
 		EnhancedInputComponent->BindAction(MakeNoiseAction, ETriggerEvent::Started, this, &ASEAI_PlayerCharacter::HandleMakeNoise);
+		EnhancedInputComponent->BindAction(DamageAction, ETriggerEvent::Started, this, &ASEAI_PlayerCharacter::HandleDamageAction);
 	}
 }
 
@@ -126,5 +128,21 @@ void ASEAI_PlayerCharacter::HandleMakeNoise()
 	if (ExplosionSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetActorLocation());
+	}
+}
+
+void ASEAI_PlayerCharacter::HandleDamageAction()
+{
+	AActor* EnemyActor = UGameplayStatics::GetActorOfClass(this, ASEAI_EnemyCharacter_Base::StaticClass());
+	if (EnemyActor)
+	{
+		UAISense_Damage::ReportDamageEvent(
+			GetWorld(), 
+			EnemyActor,
+			this,
+			10.0f,
+			GetActorLocation(),
+			FVector::ZeroVector
+		);
 	}
 }

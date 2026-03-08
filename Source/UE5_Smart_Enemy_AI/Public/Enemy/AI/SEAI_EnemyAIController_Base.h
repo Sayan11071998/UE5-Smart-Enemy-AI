@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "SEAI_EnemyAIController_Base.generated.h"
 
+class UAISenseConfig_Damage;
 class UAISenseConfig_Hearing;
 class UAISenseConfig_Sight;
 struct FAIStimulus;
@@ -46,4 +47,7 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAISenseConfig_Hearing> HearingConfig;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAISenseConfig_Damage> DamageConfig;
 };
