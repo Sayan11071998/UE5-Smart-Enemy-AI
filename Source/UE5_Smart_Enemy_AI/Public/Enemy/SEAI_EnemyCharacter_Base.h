@@ -20,7 +20,7 @@ class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, publ
 public:
 	ASEAI_EnemyCharacter_Base();
 	
-	void WieldSword();
+	void EquipSword();
 	void UnequipSword();
 	void Attack();
 	
@@ -36,10 +36,10 @@ public:
 	TObjectPtr<ASEAI_PatrolRoute> PatrolRoute;
 	
 	UFUNCTION(BlueprintCallable, Category = "AI|Combat")
-	void HandleWieldNotify();
+	void HandleEquipNotify();
 	
 	UFUNCTION(BlueprintCallable, Category = "AI|Combat")
-	void HandleSheathNotify();
+	void HandleUnequipNotify();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
@@ -57,16 +57,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
-	void OnWieldMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-	void OnSheathMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnEquipMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnUnequipMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	void HandleAttackMontageFinished(UAnimMontage* Montage, bool bInterrupted);
 	
 private:
 	UPROPERTY()
 	TObjectPtr<ASEAI_SwordBase> SpawnedSword;
 	
-	bool bIsWieldingSword = false;
+	bool bIsSwordEquipped = false;
 	
 public:
-	FORCEINLINE bool IsWieldingSword() const { return bIsWieldingSword; }
+	FORCEINLINE bool IsSwordEquipped() const { return bIsSwordEquipped; }
 };
