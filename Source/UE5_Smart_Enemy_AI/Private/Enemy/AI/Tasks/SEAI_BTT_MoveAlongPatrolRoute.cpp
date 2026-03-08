@@ -60,6 +60,17 @@ EBTNodeResult::Type USEAI_BTT_MoveAlongPatrolRoute::ExecuteTask(UBehaviorTreeCom
 	return EBTNodeResult::Failed;
 }
 
+EBTNodeResult::Type USEAI_BTT_MoveAlongPatrolRoute::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	AAIController* AIController = OwnerComp.GetAIOwner();
+	if (AIController)
+	{
+		AIController->StopMovement();
+	}
+
+	return EBTNodeResult::Aborted;
+}
+
 void USEAI_BTT_MoveAlongPatrolRoute::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result,
 	UBehaviorTreeComponent* OwnerComp, ASEAI_PatrolRoute* PatrolRoute)
 {

@@ -25,6 +25,7 @@ protected:
 	// Input Callbacks
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void HandleToggleAIState();
 	
 private:
 	// Private Components
@@ -46,6 +47,11 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> JumpAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ToggleAIStateAction;
+	
+	bool bIsAIStateAttacking = false;
 
 public:
 	FORCEINLINE TObjectPtr<USpringArmComponent> GetCameraBoom() const { return CameraBoom; }

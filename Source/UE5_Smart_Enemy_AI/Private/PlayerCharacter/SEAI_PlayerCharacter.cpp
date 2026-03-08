@@ -8,6 +8,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
+#include "Enemy/SEAI_EnemyCharacter_Base.h"
+#include "Enemy/AI/SEAI_EnemyAIController_Base.h"
 
 ASEAI_PlayerCharacter::ASEAI_PlayerCharacter()
 {
@@ -58,6 +61,8 @@ void ASEAI_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	
+		EnhancedInputComponent->BindAction(ToggleAIStateAction, ETriggerEvent::Started, this, &ASEAI_PlayerCharacter::HandleToggleAIState);
 	}
 }
 
@@ -79,5 +84,31 @@ void ASEAI_PlayerCharacter::Look(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(Looked.X);
 		AddControllerPitchInput(Looked.Y);
+	}
+}
+
+void ASEAI_PlayerCharacter::HandleToggleAIState()
+{
+	AActor* EnemyActor = UGameplayStatics::GetActorOfClass(this, ASEAI_EnemyCharacter_Base::StaticClass());
+    
+	if (EnemyActor)
+	{
+		APawn* EnemyPawn = Cast<APawn>(EnemyActor);
+		if (EnemyPawn)
+		{
+			ASEAI_EnemyAIController_Base* AIC = Cast<ASEAI_EnemyAIController_Base>(EnemyPawn->GetController());
+			if (AIC)
+			{
+				bIsAIStateAttacking = !bIsAIStateAttacking;
+				if (bIsAIStateAttacking)
+				{
+					AIC->SetStateAsAttacking(this);
+				}
+				else
+				{
+					AIC->SetStateAsPassive();
+				}
+			}
+		}
 	}
 }

@@ -1,7 +1,6 @@
 #include "Enemy/AI/SEAI_EnemyAIController_Base.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"
+#include "Enemy/AI/Enums/SEAI_AI_DataTypes.h"
 
 ASEAI_EnemyAIController_Base::ASEAI_EnemyAIController_Base()
 {
@@ -11,25 +10,26 @@ void ASEAI_EnemyAIController_Base::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	
-	GetWorldTimerManager().SetTimer(
-		PossessionTimerHandle, 
-		this,
-		&ASEAI_EnemyAIController_Base::OnPossessionDelayCompleted,
-		0.2f,
-		false	
-	);
-}
-
-void ASEAI_EnemyAIController_Base::OnPossessionDelayCompleted()
-{
 	if (BehaviorTreeAsset)
 	{
 		RunBehaviorTree(BehaviorTreeAsset);
-		
-		if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
-		{
-			ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
-			BlackboardComponent->SetValueAsObject(AttackTargetKeyName, PlayerCharacter);
-		}
+		SetStateAsPassive();
+	}
+}
+
+void ASEAI_EnemyAIController_Base::SetStateAsPassive()
+{
+	if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
+	{
+		BlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(ESEAI_AIState::Passive));
+	}
+}
+
+void ASEAI_EnemyAIController_Base::SetStateAsAttacking(TObjectPtr<AActor> Target)
+{
+	if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
+	{
+		BlackboardComponent->SetValueAsObject(AttackTargetKeyName, Target);
+		BlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(ESEAI_AIState::Attacking));
 	}
 }

@@ -14,20 +14,21 @@ class UE5_SMART_ENEMY_AI_API ASEAI_EnemyAIController_Base : public AAIController
 public:
 	ASEAI_EnemyAIController_Base();
 	
+	void SetStateAsPassive();
+	void SetStateAsAttacking(TObjectPtr<AActor> Target);
+	
 protected:
 	// ~ Begin AController interface
 	virtual void OnPossess(APawn* InPawn) override;
 	// ~ End AController interface
 	
-	void OnPossessionDelayCompleted();
-	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTreeAsset;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FName StateKeyName = FName("AIState");
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName AttackTargetKeyName = FName("AttackTarget");
-	
-	// Timer handle for the possession delay
-	FTimerHandle PossessionTimerHandle;
 };
