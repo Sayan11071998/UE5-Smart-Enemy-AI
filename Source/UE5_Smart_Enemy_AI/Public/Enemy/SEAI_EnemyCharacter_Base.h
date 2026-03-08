@@ -28,18 +28,17 @@ public:
 	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
 	virtual float SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed) override;
 	
+	// Notify Calls
+	void HandleEquipNotify();
+	void HandleUnequipNotify();
+	
+	// Delegate Calls
 	FOnEquipSwordEnd OnEquipSwordEnd;
 	FOnUnequipSwordEnd OnUnequipSwordEnd;
 	FOnAttackEnd OnAttackEnd;
 	
 	UPROPERTY(EditInstanceOnly, Category = "AI")
 	TObjectPtr<ASEAI_PatrolRoute> PatrolRoute;
-	
-	UFUNCTION(BlueprintCallable, Category = "AI|Combat")
-	void HandleEquipNotify();
-	
-	UFUNCTION(BlueprintCallable, Category = "AI|Combat")
-	void HandleUnequipNotify();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
