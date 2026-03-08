@@ -63,6 +63,7 @@ void ASEAI_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	
 		EnhancedInputComponent->BindAction(ToggleAIStateAction, ETriggerEvent::Started, this, &ASEAI_PlayerCharacter::HandleToggleAIState);
+		EnhancedInputComponent->BindAction(MakeNoiseAction, ETriggerEvent::Started, this, &ASEAI_PlayerCharacter::HandleMakeNoise);
 	}
 }
 
@@ -110,5 +111,20 @@ void ASEAI_PlayerCharacter::HandleToggleAIState()
 				}
 			}
 		}
+	}
+}
+
+void ASEAI_PlayerCharacter::HandleMakeNoise()
+{
+	MakeNoise(1.0f, this, GetActorLocation());
+
+	if (ExplosionEffect)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
+	}
+
+	if (ExplosionSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetActorLocation());
 	}
 }
