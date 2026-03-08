@@ -4,6 +4,8 @@
 #include "AIController.h"
 #include "SEAI_EnemyAIController_Base.generated.h"
 
+class UAISenseConfig_Sight;
+struct FAIStimulus;
 class UBehaviorTree;
 
 UCLASS()
@@ -22,6 +24,9 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	// ~ End AController interface
 	
+	UFUNCTION()
+	void HandleTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTreeAsset;
@@ -31,4 +36,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName AttackTargetKeyName = FName("AttackTarget");
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAIPerceptionComponent> PerceptionComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAISenseConfig_Sight> SightConfig;
 };
