@@ -21,3 +21,12 @@ enum class ESEAI_AIState : uint8
 	Investigating  UMETA(DisplayName = "Investigating"),
 	Dead           UMETA(DisplayName = "Dead")
 };
+
+UENUM(BlueprintType)
+enum class ESEAI_AISense : uint8
+{
+	None    UMETA(DisplayName = "None"),
+	Sight   UMETA(DisplayName = "Sight"),
+	Hearing UMETA(DisplayName = "Hearing"),
+	Damage  UMETA(DisplayName = "Damage")
+};

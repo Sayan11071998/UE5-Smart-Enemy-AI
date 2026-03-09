@@ -7,6 +7,7 @@
 #include "PlayerCharacter/SEAI_PlayerCharacter.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
+#include  "Perception/AIPerceptionSystem.h"
 
 ASEAI_EnemyAIController_Base::ASEAI_EnemyAIController_Base()
 {
@@ -49,21 +50,100 @@ void ASEAI_EnemyAIController_Base::OnPossess(APawn* InPawn)
 	}
 }
 
-void ASEAI_EnemyAIController_Base::HandleTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+bool ASEAI_EnemyAIController_Base::CanSenseActor(TObjectPtr<AActor> Actor, ESEAI_AISense Sense,
+	FAIStimulus& OutStimulus) const
 {
-	// Check if the perceived actor is the Player
-	if (Actor && Actor->IsA<ASEAI_PlayerCharacter>())
+	if (!Actor || !PerceptionComp) return false;
+	
+	FActorPerceptionBlueprintInfo PerceptionInfo;
+	PerceptionComp->GetActorsPerception(Actor, PerceptionInfo);
+
+	TSubclassOf<UAISense> SenseClass;
+	switch (Sense)
 	{
-		if (Stimulus.WasSuccessfullySensed())
+	case ESEAI_AISense::Sight:
+		SenseClass = UAISense_Sight::StaticClass();
+		break;
+	case ESEAI_AISense::Hearing:
+		SenseClass = UAISense_Hearing::StaticClass();
+		break;
+	case ESEAI_AISense::Damage:
+		SenseClass = UAISense_Damage::StaticClass();
+		break;
+	default:
+		return false;
+	}
+	
+	// Loop through "Last Sensed Stimuli" to find a match
+	for (const FAIStimulus& Stimulus : PerceptionInfo.LastSensedStimuli)
+	{
+		if (UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus) == SenseClass)
 		{
-			// Spotted the player -> Start Attacking
+			if (Stimulus.WasSuccessfullySensed())
+			{
+				OutStimulus = Stimulus;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+ESEAI_AIState ASEAI_EnemyAIController_Base::GetCurrentState() const
+{
+	if (const UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
+	{
+		return static_cast<ESEAI_AIState>(BlackboardComponent->GetValueAsEnum(StateKeyName));
+	}
+	return ESEAI_AIState::Passive;
+}
+
+void ASEAI_EnemyAIController_Base::HandleSensedSight(TObjectPtr<AActor> Actor)
+{
+	ESEAI_AIState CurrentState = GetCurrentState();
+	
+	// Switch on State: only proceed if Passive, Frozen, or Investigating
+	if (CurrentState == ESEAI_AIState::Passive ||
+		CurrentState == ESEAI_AIState::Investigating)
+	{
+		// Is the actor the Player Character?
+		if (Actor && Actor->IsA<ASEAI_PlayerCharacter>())
+		{
 			SetStateAsAttacking(Actor);
 		}
-		else
-		{
-			// Lost sight of the player -> Go back to Passive
-			SetStateAsPassive();
-		}
+	}
+}
+
+void ASEAI_EnemyAIController_Base::HandleSensedSound(FVector Location)
+{
+	ESEAI_AIState CurrentState = GetCurrentState();
+	if (CurrentState == ESEAI_AIState::Passive || CurrentState == ESEAI_AIState::Investigating)
+	{
+		SetStateAsInvestigating(Location);
+	}
+}
+
+void ASEAI_EnemyAIController_Base::HandleTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{
+	if (!Actor) return;
+	
+	FAIStimulus CurrentStimulus;
+	
+	// Check Sight
+	if (CanSenseActor(Actor, ESEAI_AISense::Sight, CurrentStimulus))
+	{
+		HandleSensedSight(Actor);
+	}
+	// Check Hearing
+	if (CanSenseActor(Actor, ESEAI_AISense::Hearing, CurrentStimulus))
+	{
+		HandleSensedSound(CurrentStimulus.StimulusLocation);
+	}
+	
+	// Check Damage
+	if (CanSenseActor(Actor, ESEAI_AISense::Damage, CurrentStimulus))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Sensed Damage"));
 	}
 }
 
@@ -81,5 +161,14 @@ void ASEAI_EnemyAIController_Base::SetStateAsAttacking(TObjectPtr<AActor> Target
 	{
 		BlackboardComponent->SetValueAsObject(AttackTargetKeyName, Target);
 		BlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(ESEAI_AIState::Attacking));
+	}
+}
+
+void ASEAI_EnemyAIController_Base::SetStateAsInvestigating(FVector Location)
+{
+	if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+	{
+		BlackboardComp->SetValueAsEnum(StateKeyName, static_cast<uint8>(ESEAI_AIState::Investigating));
+		BlackboardComp->SetValueAsVector(PointOfInterestKeyName, Location);
 	}
 }
