@@ -33,6 +33,7 @@ protected:
 	
 	void HandleSensedSight(TObjectPtr<AActor> Actor);
 	void HandleSensedSound(FVector Location);
+	void HandleSensedDamage(TObjectPtr<AActor> Actor);
 	
 	UFUNCTION()
 	void HandleTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);

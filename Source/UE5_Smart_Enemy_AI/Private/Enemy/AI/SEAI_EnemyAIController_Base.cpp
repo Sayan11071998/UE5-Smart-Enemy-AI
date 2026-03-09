@@ -123,6 +123,16 @@ void ASEAI_EnemyAIController_Base::HandleSensedSound(FVector Location)
 	}
 }
 
+void ASEAI_EnemyAIController_Base::HandleSensedDamage(TObjectPtr<AActor> Actor)
+{
+	ESEAI_AIState CurrentState = GetCurrentState();
+	if (CurrentState == ESEAI_AIState::Passive ||
+		CurrentState == ESEAI_AIState::Investigating)
+	{
+		SetStateAsAttacking(Actor);
+	}
+}
+
 void ASEAI_EnemyAIController_Base::HandleTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (!Actor) return;
@@ -144,7 +154,7 @@ void ASEAI_EnemyAIController_Base::HandleTargetPerceptionUpdated(AActor* Actor, 
 	// Check Damage
 	if (CanSenseActor(Actor, ESEAI_AISense::Damage, CurrentStimulus))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Sensed Damage"));
+		HandleSensedDamage(Actor);
 	}
 }
 
