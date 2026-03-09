@@ -36,4 +36,10 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement Data")
 	bool bIsFalling;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Movement Data")
+	float Direction;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Movement Data")
+	bool bIsFocusingTarget;
 };

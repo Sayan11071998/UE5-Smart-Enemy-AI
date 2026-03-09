@@ -15,6 +15,7 @@ public class UE5_Smart_Enemy_AI : ModuleRules
 			"Engine",
 			"InputCore",
 			"EnhancedInput",
+			"AnimGraphRuntime",
 			"AIModule"
 		});
 	}
