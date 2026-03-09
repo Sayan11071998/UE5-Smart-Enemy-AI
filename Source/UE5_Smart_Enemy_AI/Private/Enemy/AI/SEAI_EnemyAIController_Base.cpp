@@ -134,6 +134,7 @@ void ASEAI_EnemyAIController_Base::HandleTargetPerceptionUpdated(AActor* Actor, 
 	{
 		HandleSensedSight(Actor);
 	}
+	
 	// Check Hearing
 	if (CanSenseActor(Actor, ESEAI_AISense::Hearing, CurrentStimulus))
 	{
