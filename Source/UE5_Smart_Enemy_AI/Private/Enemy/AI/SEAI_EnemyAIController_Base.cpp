@@ -162,6 +162,9 @@ void ASEAI_EnemyAIController_Base::SetStateAsPassive()
 {
 	if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
 	{
+		ClearFocus(EAIFocusPriority::Gameplay);
+		AttackTarget = nullptr;
+		
 		BlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(ESEAI_AIState::Passive));
 	}
 }
@@ -170,8 +173,12 @@ void ASEAI_EnemyAIController_Base::SetStateAsAttacking(TObjectPtr<AActor> Target
 {
 	if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
 	{
+		AttackTarget = Target.Get();
+		
 		BlackboardComponent->SetValueAsObject(AttackTargetKeyName, Target);
 		BlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(ESEAI_AIState::Attacking));
+		
+		SetFocus(AttackTarget);
 	}
 }
 

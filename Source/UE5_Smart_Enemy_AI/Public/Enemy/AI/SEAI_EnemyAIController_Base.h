@@ -52,6 +52,9 @@ private:
 	FName PointOfInterestKeyName = FName("PointOfInterest");
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<AActor> AttackTarget;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAIPerceptionComponent> PerceptionComp;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
@@ -62,4 +65,7 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAISenseConfig_Damage> DamageConfig;
+	
+public:
+	FORCEINLINE TObjectPtr<AActor> GetAttackTarget() const { return AttackTarget; }
 };
