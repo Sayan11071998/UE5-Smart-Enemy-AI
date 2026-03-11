@@ -7,7 +7,8 @@
 #include "PlayerCharacter/SEAI_PlayerCharacter.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
-#include  "Perception/AIPerceptionSystem.h"
+#include "Perception/AIPerceptionSystem.h"
+#include "Interfaces/SEAI_EnemyAI_Interface.h"
 
 ASEAI_EnemyAIController_Base::ASEAI_EnemyAIController_Base()
 {
@@ -47,6 +48,20 @@ void ASEAI_EnemyAIController_Base::OnPossess(APawn* InPawn)
 	{
 		RunBehaviorTree(BehaviorTreeAsset);
 		SetStateAsPassive();
+		
+		if (InPawn->Implements<USEAI_EnemyAI_Interface>())
+		{
+			float AttackRadius = 0.f;
+			float DefendRadius = 0.f;
+			
+			ISEAI_EnemyAI_Interface::Execute_GetIdealRange(InPawn, AttackRadius, DefendRadius);
+			
+			if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+			{
+				BlackboardComp->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
+				BlackboardComp->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
+			}
+		}
 	}
 }
 

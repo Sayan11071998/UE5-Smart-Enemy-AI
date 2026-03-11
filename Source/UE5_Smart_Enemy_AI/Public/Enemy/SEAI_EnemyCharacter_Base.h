@@ -27,6 +27,7 @@ public:
 	// USEAI_EnemyAI_Interface interface
 	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
 	virtual float SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed) override;
+	virtual void GetIdealRange_Implementation(float& OutAttackRadius, float& OutDefendRadius) const override;
 	
 	// Notify Calls
 	void HandleEquipNotify();

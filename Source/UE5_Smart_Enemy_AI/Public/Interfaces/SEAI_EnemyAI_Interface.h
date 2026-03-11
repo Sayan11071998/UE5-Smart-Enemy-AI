@@ -23,4 +23,7 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
 	float SetMovementSpeed(ESEAI_MovementSpeed Speed);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
+	void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) const;
 };

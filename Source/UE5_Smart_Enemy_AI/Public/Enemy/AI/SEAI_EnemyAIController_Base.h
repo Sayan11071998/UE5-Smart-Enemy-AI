@@ -51,6 +51,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName PointOfInterestKeyName = FName("PointOfInterest");
 	
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FName AttackRadiusKeyName = FName("AttackRadius");
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FName DefendRadiusKeyName = FName("DefendRadius");
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<AActor> AttackTarget;
 	

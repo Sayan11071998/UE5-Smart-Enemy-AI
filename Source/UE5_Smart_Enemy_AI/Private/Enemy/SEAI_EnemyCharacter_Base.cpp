@@ -140,6 +140,12 @@ float ASEAI_EnemyCharacter_Base::SetMovementSpeed_Implementation(ESEAI_MovementS
 	return SpeedValue;
 }
 
+void ASEAI_EnemyCharacter_Base::GetIdealRange_Implementation(float& OutAttackRadius, float& OutDefendRadius) const
+{
+	OutAttackRadius = 150.f;
+	OutDefendRadius = 350.f;
+}
+
 void ASEAI_EnemyCharacter_Base::HandleEquipNotify()
 {
 	if (SwordClass && !SpawnedSword)
