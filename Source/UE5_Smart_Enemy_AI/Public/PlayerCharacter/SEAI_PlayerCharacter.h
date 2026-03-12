@@ -25,6 +25,9 @@ protected:
 	// Input Callbacks
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void HandleToggleAIState();
+	void HandleMakeNoise();
+	void HandleDamageAction();
 	
 private:
 	// Private Components
@@ -46,6 +49,24 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> JumpAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ToggleAIStateAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MakeNoiseAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> DamageAction;
+	
+	// Effects
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	TObjectPtr<UParticleSystem> ExplosionEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	TObjectPtr<USoundBase> ExplosionSound;
+	
+	bool bIsAIStateAttacking = false;
 
 public:
 	FORCEINLINE TObjectPtr<USpringArmComponent> GetCameraBoom() const { return CameraBoom; }
