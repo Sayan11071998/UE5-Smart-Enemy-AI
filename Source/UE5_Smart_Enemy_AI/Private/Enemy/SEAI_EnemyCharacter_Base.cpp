@@ -30,9 +30,9 @@ ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 	}
 }
 
-void ASEAI_EnemyCharacter_Base::EquipSword()
+void ASEAI_EnemyCharacter_Base::EquipWeapon_Implementation()
 {
-	if (EquipMontage && !bIsSwordEquipped)
+	if (EquipMontage && !bIsWeaponEquipped)
 	{
 		float Duration = PlayAnimMontage(EquipMontage);
 		if (Duration > 0.0f)
@@ -48,9 +48,9 @@ void ASEAI_EnemyCharacter_Base::EquipSword()
 	}
 }
 
-void ASEAI_EnemyCharacter_Base::UnequipSword()
+void ASEAI_EnemyCharacter_Base::UnequipWeapon_Implementation()
 {
-	if (UnequipMontage && bIsSwordEquipped)
+	if (UnequipMontage && bIsWeaponEquipped)
 	{
 		float Duration = PlayAnimMontage(UnequipMontage);
 		if (Duration > 0.0f)
@@ -91,12 +91,12 @@ void ASEAI_EnemyCharacter_Base::Attack()
 
 void ASEAI_EnemyCharacter_Base::OnEquipMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	OnEquipSwordEnd.Broadcast();
+	OnWeaponEquipped.Broadcast();
 }
 
 void ASEAI_EnemyCharacter_Base::OnUnequipMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	OnUnequipSwordEnd.Broadcast();
+	OnWeaponUnequipped.Broadcast();
 }
 
 void ASEAI_EnemyCharacter_Base::HandleAttackMontageFinished(UAnimMontage* Montage, bool bInterrupted)
@@ -164,7 +164,7 @@ void ASEAI_EnemyCharacter_Base::HandleEquipNotify()
 			);
 			
 			SpawnedSword->AttachToComponent(GetMesh(), AttachRules, SwordSocket);
-			bIsSwordEquipped = true;
+			bIsWeaponEquipped = true;
 		}
 	}
 }
@@ -175,6 +175,6 @@ void ASEAI_EnemyCharacter_Base::HandleUnequipNotify()
 	{
 		SpawnedSword->Destroy();
 		SpawnedSword = nullptr;
-		bIsSwordEquipped = false;
+		bIsWeaponEquipped = false;
 	}
 }

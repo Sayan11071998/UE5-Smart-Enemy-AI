@@ -9,8 +9,8 @@ class ASEAI_SwordBase;
 class ASEAI_PatrolRoute;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEquipSwordEnd);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnequipSwordEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponEquipped);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponUnequipped);
 
 UCLASS()
 class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, public ISEAI_EnemyAI_Interface
@@ -19,23 +19,23 @@ class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, publ
 
 public:
 	ASEAI_EnemyCharacter_Base();
-	
-	void EquipSword();
-	void UnequipSword();
+
 	void Attack();
 	
 	// USEAI_EnemyAI_Interface interface
 	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
 	virtual float SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed) override;
 	virtual void GetIdealRange_Implementation(float& OutAttackRadius, float& OutDefendRadius) const override;
+	virtual void EquipWeapon_Implementation() override;
+	virtual void UnequipWeapon_Implementation() override;
 	
 	// Notify Calls
 	void HandleEquipNotify();
 	void HandleUnequipNotify();
 	
 	// Delegate Calls
-	FOnEquipSwordEnd OnEquipSwordEnd;
-	FOnUnequipSwordEnd OnUnequipSwordEnd;
+	FOnWeaponEquipped OnWeaponEquipped;
+	FOnWeaponUnequipped OnWeaponUnequipped;
 	FOnAttackEnd OnAttackEnd;
 	
 	UPROPERTY(EditInstanceOnly, Category = "AI")
@@ -65,8 +65,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<ASEAI_SwordBase> SpawnedSword;
 	
-	bool bIsSwordEquipped = false;
+	bool bIsWeaponEquipped = false;
 	
 public:
-	FORCEINLINE bool IsSwordEquipped() const { return bIsSwordEquipped; }
+	FORCEINLINE bool IsWeaponEquipped() const { return bIsWeaponEquipped; }
 };
