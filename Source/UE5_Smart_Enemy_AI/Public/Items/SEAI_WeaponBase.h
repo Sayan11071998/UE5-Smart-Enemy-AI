@@ -14,5 +14,5 @@ public:
 	
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Component")
-	TObjectPtr<UStaticMeshComponent> WeaponMesh;
+	TObjectPtr<USkeletalMeshComponent> Mesh;
 };
