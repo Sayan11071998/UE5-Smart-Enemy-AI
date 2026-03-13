@@ -1,7 +1,7 @@
 #include "Enemy/SEAI_EnemyCharacter_Base.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Items/SEAI_SwordBase.h"
+#include "Items/SEAI_WeaponBase.h"
 
 ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 {
@@ -43,9 +43,12 @@ void ASEAI_EnemyCharacter_Base::EquipWeapon_Implementation()
 				FOnMontageEnded MontageEndedDelegate;
 				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnEquipMontageEnded);
 				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, EquipMontage);
+				return;
 			}
 		}
 	}
+	
+	OnWeaponEquipped.Broadcast();
 }
 
 void ASEAI_EnemyCharacter_Base::UnequipWeapon_Implementation()
@@ -61,9 +64,12 @@ void ASEAI_EnemyCharacter_Base::UnequipWeapon_Implementation()
 				FOnMontageEnded MontageEndedDelegate;
 				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnUnequipMontageEnded);
 				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, UnequipMontage);
+				return;
 			}
 		}
 	}
+	
+	OnWeaponUnequipped.Broadcast();
 }
 
 void ASEAI_EnemyCharacter_Base::Attack()
@@ -148,13 +154,13 @@ void ASEAI_EnemyCharacter_Base::GetIdealRange_Implementation(float& OutAttackRad
 
 void ASEAI_EnemyCharacter_Base::HandleEquipNotify()
 {
-	if (SwordClass && !SpawnedSword)
+	if (WeaponClass && !SpawnedWeapon)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		
-		SpawnedSword = GetWorld()->SpawnActor<ASEAI_SwordBase>(SwordClass, GetActorTransform(), SpawnParams);
-		if (SpawnedSword)
+		SpawnedWeapon = GetWorld()->SpawnActor<ASEAI_WeaponBase>(WeaponClass, GetActorTransform(), SpawnParams);
+		if (SpawnedWeapon)
 		{
 			FAttachmentTransformRules AttachRules(
 				EAttachmentRule::SnapToTarget,	
@@ -163,18 +169,29 @@ void ASEAI_EnemyCharacter_Base::HandleEquipNotify()
 				true
 			);
 			
-			SpawnedSword->AttachToComponent(GetMesh(), AttachRules, SwordSocket);
+			SpawnedWeapon->AttachToComponent(GetMesh(), AttachRules, WeaponSocket);
 			bIsWeaponEquipped = true;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] Failed to spawn weapon of class %s"), *GetName(), *WeaponClass->GetName());
+		}
+	}
+	else
+	{
+		if (!WeaponClass)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] WeaponClass is null in HandleEquipNotify"), *GetName());
 		}
 	}
 }
 
 void ASEAI_EnemyCharacter_Base::HandleUnequipNotify()
 {
-	if (SpawnedSword)
+	if (SpawnedWeapon)
 	{
-		SpawnedSword->Destroy();
-		SpawnedSword = nullptr;
+		SpawnedWeapon->Destroy();
+		SpawnedWeapon = nullptr;
 		bIsWeaponEquipped = false;
 	}
 }

@@ -29,6 +29,19 @@ EBTNodeResult::Type USEAI_BTT_UnequipWeapon::ExecuteTask(UBehaviorTreeComponent&
 	return EBTNodeResult::Failed;
 }
 
+void USEAI_BTT_UnequipWeapon::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
+{
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
+	{
+		if (ASEAI_EnemyCharacter_Base* Enemy = Cast<ASEAI_EnemyCharacter_Base>(AIController->GetPawn()))
+		{
+			Enemy->OnWeaponUnequipped.RemoveDynamic(this, &USEAI_BTT_UnequipWeapon::OnUnequipFinished);
+		}
+	}
+	
+	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
+}
+
 void USEAI_BTT_UnequipWeapon::OnUnequipFinished()
 {
 	if (CachedBTComp)

@@ -5,7 +5,7 @@
 #include "Interfaces/SEAI_EnemyAI_Interface.h"
 #include "SEAI_EnemyCharacter_Base.generated.h"
 
-class ASEAI_SwordBase;
+class ASEAI_WeaponBase;
 class ASEAI_PatrolRoute;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
@@ -43,10 +43,10 @@ public:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	TSubclassOf<ASEAI_SwordBase> SwordClass;
+	TSubclassOf<ASEAI_WeaponBase> WeaponClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	FName SwordSocket = FName(TEXT("hand_r_sword_socket"));
+	FName WeaponSocket;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI|Combat")
 	TObjectPtr<UAnimMontage> EquipMontage;
@@ -63,7 +63,7 @@ protected:
 	
 private:
 	UPROPERTY()
-	TObjectPtr<ASEAI_SwordBase> SpawnedSword;
+	TObjectPtr<ASEAI_WeaponBase> SpawnedWeapon;
 	
 	bool bIsWeaponEquipped = false;
 	
