@@ -7,7 +7,7 @@ void ASEAI_EnemyCharacter_Melee::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ASEAI_EnemyCharacter_Melee::Attack()
+void ASEAI_EnemyCharacter_Melee::Attack_Implementation()
 {
 	if (AttackMontage)
 	{

@@ -10,7 +10,7 @@ class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Melee : public ASEAI_EnemyChar
 	GENERATED_BODY()
 
 public:
-	virtual void Attack() override;
+	virtual void Attack_Implementation() override;
 
 protected:
 	virtual void BeginPlay() override;

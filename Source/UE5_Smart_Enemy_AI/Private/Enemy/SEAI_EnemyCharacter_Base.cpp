@@ -131,7 +131,7 @@ void ASEAI_EnemyCharacter_Base::HandleUnequipNotify()
 	}
 }
 
-void ASEAI_EnemyCharacter_Base::Attack()
+void ASEAI_EnemyCharacter_Base::Attack_Implementation()
 {
 }
 

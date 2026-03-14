@@ -20,7 +20,7 @@ class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, publ
 public:
 	ASEAI_EnemyCharacter_Base();
 
-	virtual void Attack();
+	virtual void Attack_Implementation() override;
 	
 	// USEAI_EnemyAI_Interface interface
 	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
