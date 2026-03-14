@@ -15,5 +15,7 @@ protected:
 public:
 	// ~ Begin USEAI_EnemyAI_Interface interface
 	virtual void EquipWeapon_Implementation() override;
+	virtual float SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed) override;
+	virtual void GetIdealRange_Implementation(float& OutAttackRadius, float& OutDefendRadius) const override;
 	// ~ End USEAI_EnemyAI_Interface interface
 };

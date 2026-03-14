@@ -1,5 +1,6 @@
 #include "Enemy/SEAI_EnemyCharacter_Ranged.h"
 #include "Items/SEAI_WeaponBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void ASEAI_EnemyCharacter_Ranged::BeginPlay()
 {
@@ -29,4 +30,38 @@ void ASEAI_EnemyCharacter_Ranged::EquipWeapon_Implementation()
 			OnWeaponEquipped.Broadcast();
 		}
 	}
+}
+
+float ASEAI_EnemyCharacter_Ranged::SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed)
+{
+	float SpeedValue = 0.f;
+
+	switch (Speed)
+	{
+	case ESEAI_MovementSpeed::Idle:
+		SpeedValue = 0.f;
+		break;
+	case ESEAI_MovementSpeed::Walking:
+		SpeedValue = 200.f;
+		break;
+	case ESEAI_MovementSpeed::Jogging:
+		SpeedValue = 300.f;
+		break;
+	case ESEAI_MovementSpeed::Sprinting:
+		SpeedValue = 500.f;
+		break;
+	}
+
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = SpeedValue;
+	}
+
+	return SpeedValue;
+}
+
+void ASEAI_EnemyCharacter_Ranged::GetIdealRange_Implementation(float& OutAttackRadius, float& OutDefendRadius) const
+{
+	OutAttackRadius = 600.f;
+	OutDefendRadius = 600.f;
 }
