@@ -56,14 +56,13 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<UAnimMontage> AttackMontage;
+	
+	UPROPERTY()
+	TObjectPtr<ASEAI_WeaponBase> SpawnedWeapon;
 
 	void OnEquipMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	void OnUnequipMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	void HandleAttackMontageFinished(UAnimMontage* Montage, bool bInterrupted);
-	
-private:
-	UPROPERTY()
-	TObjectPtr<ASEAI_WeaponBase> SpawnedWeapon;
 	
 	bool bIsWeaponEquipped = false;
 	
