@@ -30,71 +30,6 @@ ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 	}
 }
 
-void ASEAI_EnemyCharacter_Base::EquipWeapon_Implementation()
-{
-	if (EquipMontage && !bIsWeaponEquipped)
-	{
-		float Duration = PlayAnimMontage(EquipMontage);
-		if (Duration > 0.0f)
-		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			if (AnimInstance)
-			{
-				FOnMontageEnded MontageEndedDelegate;
-				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnEquipMontageEnded);
-				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, EquipMontage);
-				return;
-			}
-		}
-	}
-	
-	OnWeaponEquipped.Broadcast();
-}
-
-void ASEAI_EnemyCharacter_Base::UnequipWeapon_Implementation()
-{
-	if (UnequipMontage && bIsWeaponEquipped)
-	{
-		float Duration = PlayAnimMontage(UnequipMontage);
-		if (Duration > 0.0f)
-		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			if (AnimInstance)
-			{
-				FOnMontageEnded MontageEndedDelegate;
-				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnUnequipMontageEnded);
-				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, UnequipMontage);
-				return;
-			}
-		}
-	}
-	
-	OnWeaponUnequipped.Broadcast();
-}
-
-void ASEAI_EnemyCharacter_Base::Attack()
-{
-	if (AttackMontage)
-	{
-		float Duration = PlayAnimMontage(AttackMontage);
-		
-		if (Duration > 0.0f)
-		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			if (AnimInstance)
-			{
-				FOnMontageEnded MontageEndedDelegate;
-				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::HandleAttackMontageFinished);
-				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, AttackMontage);
-			}
-		}
-		else
-		{
-			OnAttackEnd.Broadcast();
-		}
-	}
-}
-
 void ASEAI_EnemyCharacter_Base::OnEquipMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	OnWeaponEquipped.Broadcast();
@@ -194,4 +129,16 @@ void ASEAI_EnemyCharacter_Base::HandleUnequipNotify()
 		SpawnedWeapon = nullptr;
 		bIsWeaponEquipped = false;
 	}
+}
+
+void ASEAI_EnemyCharacter_Base::Attack()
+{
+}
+
+void ASEAI_EnemyCharacter_Base::EquipWeapon_Implementation()
+{
+}
+
+void ASEAI_EnemyCharacter_Base::UnequipWeapon_Implementation()
+{
 }

@@ -20,7 +20,7 @@ class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, publ
 public:
 	ASEAI_EnemyCharacter_Base();
 
-	void Attack();
+	virtual void Attack();
 	
 	// USEAI_EnemyAI_Interface interface
 	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
@@ -30,8 +30,8 @@ public:
 	virtual void UnequipWeapon_Implementation() override;
 	
 	// Notify Calls
-	void HandleEquipNotify();
-	void HandleUnequipNotify();
+	virtual void HandleEquipNotify();
+	virtual void HandleUnequipNotify();
 	
 	// Delegate Calls
 	FOnWeaponEquipped OnWeaponEquipped;
