@@ -10,6 +10,7 @@
 #include "Perception/AIPerceptionSystem.h"
 #include "Interfaces/SEAI_EnemyAI_Interface.h"
 #include "Enemy/SEAI_EnemyCharacter_Base.h"
+#include "BehaviorTree/BehaviorTree.h"
 
 ASEAI_EnemyAIController_Base::ASEAI_EnemyAIController_Base()
 {
@@ -45,10 +46,15 @@ void ASEAI_EnemyAIController_Base::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	
+	UE_LOG(LogTemp, Warning, TEXT("[AI] OnPossess called. Pawn: %s"), InPawn ? *InPawn->GetName() : TEXT("NULL"));
+
 	if (ASEAI_EnemyCharacter_Base* EnemyCharacter = Cast<ASEAI_EnemyCharacter_Base>(InPawn))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[AI] Cast to ASEAI_EnemyCharacter_Base successful."));
+
 		if (UBehaviorTree* BT = EnemyCharacter->BehaviorTree)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("[AI] BehaviorTree found: %s. Running..."), *BT->GetName());
 			RunBehaviorTree(BT);
 			SetStateAsPassive();
 			
@@ -56,13 +62,27 @@ void ASEAI_EnemyAIController_Base::OnPossess(APawn* InPawn)
 			float DefendRadius = 0.f;
 			
 			ISEAI_EnemyAI_Interface::Execute_GetIdealRange(InPawn, AttackRadius, DefendRadius);
+			UE_LOG(LogTemp, Warning, TEXT("[AI] GetIdealRange returned: AttackRadius=%.1f, DefendRadius=%.1f"), AttackRadius, DefendRadius);
 			
 			if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
 			{
+				UE_LOG(LogTemp, Warning, TEXT("[AI] Blackboard found. Setting radius values."));
 				BlackboardComp->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
 				BlackboardComp->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
 			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("[AI] Blackboard component is NULL after RunBehaviorTree!"));
+			}
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("[AI] BehaviorTree is NULL on %s. Cannot run BT or set radii."), *EnemyCharacter->GetName());
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[AI] Cast to ASEAI_EnemyCharacter_Base FAILED for pawn: %s"), InPawn ? *InPawn->GetName() : TEXT("NULL"));
 	}
 }
 
