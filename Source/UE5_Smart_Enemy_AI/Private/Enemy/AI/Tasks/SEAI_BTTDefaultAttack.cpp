@@ -21,7 +21,7 @@ EBTNodeResult::Type USEAI_BTTDefaultAttack::ExecuteTask(UBehaviorTreeComponent& 
 			Enemy->OnAttackEnd.RemoveDynamic(this, &USEAI_BTTDefaultAttack::HandleAttackFinished);
 			Enemy->OnAttackEnd.AddDynamic(this, &USEAI_BTTDefaultAttack::HandleAttackFinished);
 
-			Enemy->Attack();
+			ISEAI_EnemyAI_Interface::Execute_Attack(Enemy);
 			return EBTNodeResult::InProgress;
 		}
 	}

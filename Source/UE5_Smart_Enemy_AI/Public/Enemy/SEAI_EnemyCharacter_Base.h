@@ -5,12 +5,13 @@
 #include "Interfaces/SEAI_EnemyAI_Interface.h"
 #include "SEAI_EnemyCharacter_Base.generated.h"
 
-class ASEAI_SwordBase;
+class ASEAI_WeaponBase;
 class ASEAI_PatrolRoute;
+class UBehaviorTree;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEquipSwordEnd);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnequipSwordEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponEquipped);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponUnequipped);
 
 UCLASS()
 class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, public ISEAI_EnemyAI_Interface
@@ -19,23 +20,23 @@ class UE5_SMART_ENEMY_AI_API ASEAI_EnemyCharacter_Base : public ACharacter, publ
 
 public:
 	ASEAI_EnemyCharacter_Base();
-	
-	void EquipSword();
-	void UnequipSword();
-	void Attack();
+
+	virtual void Attack_Implementation() override;
 	
 	// USEAI_EnemyAI_Interface interface
 	virtual ASEAI_PatrolRoute* GetPatrolRoute_Implementation() const override;
 	virtual float SetMovementSpeed_Implementation(ESEAI_MovementSpeed Speed) override;
 	virtual void GetIdealRange_Implementation(float& OutAttackRadius, float& OutDefendRadius) const override;
+	virtual void EquipWeapon_Implementation() override;
+	virtual void UnequipWeapon_Implementation() override;
 	
 	// Notify Calls
-	void HandleEquipNotify();
-	void HandleUnequipNotify();
+	virtual void HandleEquipNotify();
+	virtual void HandleUnequipNotify();
 	
 	// Delegate Calls
-	FOnEquipSwordEnd OnEquipSwordEnd;
-	FOnUnequipSwordEnd OnUnequipSwordEnd;
+	FOnWeaponEquipped OnWeaponEquipped;
+	FOnWeaponUnequipped OnWeaponUnequipped;
 	FOnAttackEnd OnAttackEnd;
 	
 	UPROPERTY(EditInstanceOnly, Category = "AI")
@@ -43,10 +44,10 @@ public:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	TSubclassOf<ASEAI_SwordBase> SwordClass;
+	TSubclassOf<ASEAI_WeaponBase> WeaponClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	FName SwordSocket = FName(TEXT("hand_r_sword_socket"));
+	FName WeaponSocket;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI|Combat")
 	TObjectPtr<UAnimMontage> EquipMontage;
@@ -56,17 +57,21 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<UAnimMontage> AttackMontage;
+	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+	
+protected:
+	UPROPERTY()
+	TObjectPtr<ASEAI_WeaponBase> SpawnedWeapon;
 
 	void OnEquipMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	void OnUnequipMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	void HandleAttackMontageFinished(UAnimMontage* Montage, bool bInterrupted);
 	
-private:
-	UPROPERTY()
-	TObjectPtr<ASEAI_SwordBase> SpawnedSword;
-	
-	bool bIsSwordEquipped = false;
+	bool bIsWeaponEquipped = false;
 	
 public:
-	FORCEINLINE bool IsSwordEquipped() const { return bIsSwordEquipped; }
+	FORCEINLINE bool IsWeaponEquipped() const { return bIsWeaponEquipped; }
 };

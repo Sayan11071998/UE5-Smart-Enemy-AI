@@ -1,7 +1,7 @@
 #include "Enemy/SEAI_EnemyCharacter_Base.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Items/SEAI_SwordBase.h"
+#include "Items/SEAI_WeaponBase.h"
 
 ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 {
@@ -30,73 +30,14 @@ ASEAI_EnemyCharacter_Base::ASEAI_EnemyCharacter_Base()
 	}
 }
 
-void ASEAI_EnemyCharacter_Base::EquipSword()
-{
-	if (EquipMontage && !bIsSwordEquipped)
-	{
-		float Duration = PlayAnimMontage(EquipMontage);
-		if (Duration > 0.0f)
-		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			if (AnimInstance)
-			{
-				FOnMontageEnded MontageEndedDelegate;
-				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnEquipMontageEnded);
-				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, EquipMontage);
-			}
-		}
-	}
-}
-
-void ASEAI_EnemyCharacter_Base::UnequipSword()
-{
-	if (UnequipMontage && bIsSwordEquipped)
-	{
-		float Duration = PlayAnimMontage(UnequipMontage);
-		if (Duration > 0.0f)
-		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			if (AnimInstance)
-			{
-				FOnMontageEnded MontageEndedDelegate;
-				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::OnUnequipMontageEnded);
-				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, UnequipMontage);
-			}
-		}
-	}
-}
-
-void ASEAI_EnemyCharacter_Base::Attack()
-{
-	if (AttackMontage)
-	{
-		float Duration = PlayAnimMontage(AttackMontage);
-		
-		if (Duration > 0.0f)
-		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			if (AnimInstance)
-			{
-				FOnMontageEnded MontageEndedDelegate;
-				MontageEndedDelegate.BindUObject(this, &ASEAI_EnemyCharacter_Base::HandleAttackMontageFinished);
-				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, AttackMontage);
-			}
-		}
-		else
-		{
-			OnAttackEnd.Broadcast();
-		}
-	}
-}
-
 void ASEAI_EnemyCharacter_Base::OnEquipMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	OnEquipSwordEnd.Broadcast();
+	OnWeaponEquipped.Broadcast();
 }
 
 void ASEAI_EnemyCharacter_Base::OnUnequipMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	OnUnequipSwordEnd.Broadcast();
+	OnWeaponUnequipped.Broadcast();
 }
 
 void ASEAI_EnemyCharacter_Base::HandleAttackMontageFinished(UAnimMontage* Montage, bool bInterrupted)
@@ -148,13 +89,13 @@ void ASEAI_EnemyCharacter_Base::GetIdealRange_Implementation(float& OutAttackRad
 
 void ASEAI_EnemyCharacter_Base::HandleEquipNotify()
 {
-	if (SwordClass && !SpawnedSword)
+	if (WeaponClass && !SpawnedWeapon)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		
-		SpawnedSword = GetWorld()->SpawnActor<ASEAI_SwordBase>(SwordClass, GetActorTransform(), SpawnParams);
-		if (SpawnedSword)
+		SpawnedWeapon = GetWorld()->SpawnActor<ASEAI_WeaponBase>(WeaponClass, GetActorTransform(), SpawnParams);
+		if (SpawnedWeapon)
 		{
 			FAttachmentTransformRules AttachRules(
 				EAttachmentRule::SnapToTarget,	
@@ -163,18 +104,41 @@ void ASEAI_EnemyCharacter_Base::HandleEquipNotify()
 				true
 			);
 			
-			SpawnedSword->AttachToComponent(GetMesh(), AttachRules, SwordSocket);
-			bIsSwordEquipped = true;
+			SpawnedWeapon->AttachToComponent(GetMesh(), AttachRules, WeaponSocket);
+			bIsWeaponEquipped = true;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] Failed to spawn weapon of class %s"), *GetName(), *WeaponClass->GetName());
+		}
+	}
+	else
+	{
+		if (!WeaponClass)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] WeaponClass is null in HandleEquipNotify"), *GetName());
 		}
 	}
 }
 
 void ASEAI_EnemyCharacter_Base::HandleUnequipNotify()
 {
-	if (SpawnedSword)
+	if (SpawnedWeapon)
 	{
-		SpawnedSword->Destroy();
-		SpawnedSword = nullptr;
-		bIsSwordEquipped = false;
+		SpawnedWeapon->Destroy();
+		SpawnedWeapon = nullptr;
+		bIsWeaponEquipped = false;
 	}
+}
+
+void ASEAI_EnemyCharacter_Base::Attack_Implementation()
+{
+}
+
+void ASEAI_EnemyCharacter_Base::EquipWeapon_Implementation()
+{
+}
+
+void ASEAI_EnemyCharacter_Base::UnequipWeapon_Implementation()
+{
 }

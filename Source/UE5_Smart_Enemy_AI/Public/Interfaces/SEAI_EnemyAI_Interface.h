@@ -26,4 +26,13 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
 	void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
+	void EquipWeapon();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
+	void UnequipWeapon();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AI")
+	void Attack();
 };
