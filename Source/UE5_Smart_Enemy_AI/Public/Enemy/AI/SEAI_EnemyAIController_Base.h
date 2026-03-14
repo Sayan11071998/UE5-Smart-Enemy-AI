@@ -40,9 +40,6 @@ protected:
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	TObjectPtr<UBehaviorTree> BehaviorTreeAsset;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName StateKeyName = FName("AIState");
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")

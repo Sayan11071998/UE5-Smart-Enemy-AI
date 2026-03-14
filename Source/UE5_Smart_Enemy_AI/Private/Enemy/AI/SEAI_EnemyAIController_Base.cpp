@@ -9,6 +9,7 @@
 #include "Perception/AISenseConfig_Damage.h"
 #include "Perception/AIPerceptionSystem.h"
 #include "Interfaces/SEAI_EnemyAI_Interface.h"
+#include "Enemy/SEAI_EnemyCharacter_Base.h"
 
 ASEAI_EnemyAIController_Base::ASEAI_EnemyAIController_Base()
 {
@@ -44,13 +45,13 @@ void ASEAI_EnemyAIController_Base::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	
-	if (BehaviorTreeAsset)
+	if (ASEAI_EnemyCharacter_Base* EnemyCharacter = Cast<ASEAI_EnemyCharacter_Base>(InPawn))
 	{
-		RunBehaviorTree(BehaviorTreeAsset);
-		SetStateAsPassive();
-		
-		if (InPawn->Implements<USEAI_EnemyAI_Interface>())
+		if (UBehaviorTree* BT = EnemyCharacter->BehaviorTree)
 		{
+			RunBehaviorTree(BT);
+			SetStateAsPassive();
+			
 			float AttackRadius = 0.f;
 			float DefendRadius = 0.f;
 			

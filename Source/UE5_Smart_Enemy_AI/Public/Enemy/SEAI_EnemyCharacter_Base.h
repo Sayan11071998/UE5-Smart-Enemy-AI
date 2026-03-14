@@ -7,6 +7,7 @@
 
 class ASEAI_WeaponBase;
 class ASEAI_PatrolRoute;
+class UBehaviorTree;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponEquipped);
@@ -57,6 +58,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<UAnimMontage> AttackMontage;
 	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+	
+protected:
 	UPROPERTY()
 	TObjectPtr<ASEAI_WeaponBase> SpawnedWeapon;
 
